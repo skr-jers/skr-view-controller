@@ -1,15 +1,54 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React             from 'react';
+import ReactDOM          from 'react-dom/client';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App               from './App';
+import reportWebVitals   from './reportWebVitals';
+import componentRenderer from "./componentRenderer";
+
+const json = {
+    instanceOf: "container",
+    props: null,
+    children: [
+        {
+            instanceOf: "form",
+            props: {
+                name: "formulario_ejemplo"
+            },
+            children: [
+                {
+                    instanceOf: "inputText",
+                    props: {
+                        name: "nombre",
+                        id: "nombre",
+                        label: "Nombre",
+                        placeholder: "Juanito"
+                    }
+                },
+                {
+                    instanceOf: "inputText",
+                    props: {
+                        name: "apellido",
+                        id: "apellido",
+                        label: "Apellido",
+                        placeholder: "Sánchez"
+                    }
+                }
+            ]
+        },
+        {
+            instanceOf: "table",
+            props: null
+        }
+    ]
+}
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+      {componentRenderer(json)}
   </React.StrictMode>
 );
 
