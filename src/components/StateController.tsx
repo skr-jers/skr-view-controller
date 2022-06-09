@@ -137,10 +137,10 @@ const StateController = () => {
 	}
 	useEffect(()=> {
 	// @ts-ignore
-		const ids = findAllByKey(json, 'data');
-		console.log(ids)
+		const resources = findAllByKey(json, 'data');
+		console.log(resources)
 		// @ts-ignore
-		//findAllByKey(json, "props").forEach(resource => dispatcher(dataResolver(resource)) )
+		resources.forEach(resource => dispatcher(dataResolver(resource)) )
 	},[])
 	return (
 		<>
