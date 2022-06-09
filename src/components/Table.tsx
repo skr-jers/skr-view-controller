@@ -23,36 +23,35 @@ const Table = ({data}: Props) => {
     // @ts-ignore
     const componentData= useSelector((state)=>state[data.dataSourceId])
     const {data: tableData, status} = componentData
-    const tableDataTemp= {
-        columns: ["Nombre", "Dirección"],
-        rows: [
-            ["Empresa1", "Calle A"],
-            ["Empresa2", "Calle B"],
-            ["Empresa3", "Calle C"],
-        ]
-    }
 
     return (
+        status=== "success"?
         <table style={{border: "1px solid blue", padding: "10px", margin: "10px 0 10px 0"}}>
             <thead>
-                <tr>
-                    {
-                        tableDataTemp.columns.map(column=><th>{column}</th>)
-                    }
-                </tr>
+            <tr>
+                {
+                    // @ts-ignore
+                    tableData.columns.map(column=><th>{column}</th>)
+                }
+            </tr>
             </thead>
             <tbody>
             {
-                tableDataTemp.rows.map(row=>{
+                // @ts-ignore
+                tableData.rows.map(row=>{
                     return(
                         <tr>
-                            {row.map(cell=><td>{cell}</td>)}
+                            {
+                                // @ts-ignore
+                                row.map(cell=><td>{cell}</td>)
+                            }
                         </tr>
                     )
                 })
             }
             </tbody>
-        </table>
+        </table>: status==="waiting"? "Cargando...": "Ocurrió un error"
+
     )
 }
 

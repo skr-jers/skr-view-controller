@@ -52,6 +52,21 @@ const json = {
 			instanceOf: "table",
 			props: {
 				data:{
+					dataSourceId: "companies",
+					attributes:
+						{
+							uri: "/companies",
+							hostname: "localhost",
+							dataObject: "table",
+							method: "GET"
+						}
+				},
+			}
+		},
+		{
+			instanceOf: "table",
+			props: {
+				data:{
 					dataSourceId: "users",
 					attributes:
 						{
@@ -110,14 +125,24 @@ const StateController = () => {
 	}
 	// @ts-ignore
 	function findAllByKey(obj, keyToFind) {
-		return Object.entries(obj)
+		// @ts-ignore
+		// @ts-ignore
+		const array = Object.entries(obj)
 			.reduce((acc, [key, value]) => (key === keyToFind)
 					// @ts-ignore
 					? acc.concat(value)
 					: (typeof value === 'object' && value)
 						? acc.concat(findAllByKey(value, keyToFind))
 						: acc
-				, []) || [];
+				, [])
+
+			// @ts-ignore
+		function getUniqueListBy(arr, key) {
+			// @ts-ignore
+			return [...new Map(arr.map(item => [item[key], item])).values()]
+		}
+							  // @ts-ignore
+		return getUniqueListBy(array, "dataSourceId") || [];
 	}
 
 
@@ -126,9 +151,22 @@ const StateController = () => {
 	function dataResolver(resource: any) {
 		console.log(resource)
 		const {dataSourceId, attributes} = resource
-		return (dispatch: (arg0: { type: string; payload: Response | null; }) => void)=> {
+
+		// @ts-ignore
+		return dispatch=> {
 			dispatch( {type: `${dataSourceId}/${dataSourceId}OnWaiting`, payload: null})
-			fetch(attributes.hostname+attributes.uri).then(response=>{
+			 new Promise((resolve, reject) => {
+				// @ts-ignore
+
+				 setTimeout(()=>resolve({
+					 columns: ["Nombre", "Dirección"],
+					 rows: [
+						 ["Empresa1", "Calle A"],
+						 ["Empresa2", "Calle B"],
+						 ["Empresa3", "Calle C"],
+					 ]
+				 }), 9000)
+			}).then(response=>{
 				dispatch( {type: `${dataSourceId}/${dataSourceId}OnSuccess`, payload: response})
 			}).catch(error=>{
 				dispatch( {type: `${dataSourceId}/${dataSourceId}OnFailure`, payload: null})
