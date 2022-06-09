@@ -4,52 +4,23 @@ import './index.css';
 import App               from './App';
 import reportWebVitals   from './reportWebVitals';
 import componentRenderer from "./componentRenderer";
+import {Provider}        from "react-redux";
+import store             from './store'
+import StateController   from "./components/StateController";
 
-const json = {
-    instanceOf: "container",
-    props: null,
-    children: [
-        {
-            instanceOf: "form",
-            props: {
-                name: "formulario_ejemplo"
-            },
-            children: [
-                {
-                    instanceOf: "inputText",
-                    props: {
-                        name: "nombre",
-                        id: "nombre",
-                        label: "Nombre",
-                        placeholder: "Juanito"
-                    }
-                },
-                {
-                    instanceOf: "inputText",
-                    props: {
-                        name: "apellido",
-                        id: "apellido",
-                        label: "Apellido",
-                        placeholder: "Sánchez"
-                    }
-                }
-            ]
-        },
-        {
-            instanceOf: "table",
-            props: null
-        }
-    ]
-}
+
+
 
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-      {componentRenderer(json)}
-  </React.StrictMode>
+    <React.StrictMode>
+        <Provider store={store}>
+            <StateController/>
+        </Provider>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
