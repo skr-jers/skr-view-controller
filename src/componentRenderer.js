@@ -16,7 +16,6 @@ const Components = {
  * @returns {React.FunctionComponentElement<{}>|React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>}
  */
 const componentRenderer = (component) => {
-    console.log("Se ejecuta función de render")
     // component does exist
     if (typeof Components[component.instanceOf] !== "undefined") {
         return React.createElement(

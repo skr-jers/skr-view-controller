@@ -20,7 +20,6 @@ const Table = ({data}: Props) => {
     /** acceder al objeto "state" que debe envolver a toda la aplicación, o al menos a este componente.
      *  Esto puede ser React.contextAPI o Redux
      */
-    console.log(data)
     // @ts-ignore
     const componentData= useSelector((state)=>state[data.dataSourceId])
     const {data: tableData, status} = componentData

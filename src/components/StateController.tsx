@@ -100,14 +100,27 @@ const StateController = () => {
 
 	const dispatcher = useDispatch()
 
-	let resources:any[] = []
-	function getResourcesList(json:any, resources: any[]): string[]{
+		let resources:any[] = []
+	function getResourcesList(json:any,): string[]{
 		if (json.props?.data) {
 			resources.push(json.props.data)
 		}
-		json.children && json.children.map((child: any) => getResourcesList(child, resources))
+		json.children && json.children.map((child: any) => getResourcesList(child))
 		return resources
 	}
+	// @ts-ignore
+	function findAllByKey(obj, keyToFind) {
+		return Object.entries(obj)
+			.reduce((acc, [key, value]) => (key === keyToFind)
+					// @ts-ignore
+					? acc.concat(value)
+					: (typeof value === 'object' && value)
+						? acc.concat(findAllByKey(value, keyToFind))
+						: acc
+				, []) || [];
+	}
+
+
 
 
 	function dataResolver(resource: any) {
@@ -124,7 +137,10 @@ const StateController = () => {
 	}
 	useEffect(()=> {
 	// @ts-ignore
-		findNestedObject(json, "props").forEach(resource => dispatcher(dataResolver(resource)) )
+		const ids = findAllByKey(json, 'data');
+		console.log(ids)
+		// @ts-ignore
+		//findAllByKey(json, "props").forEach(resource => dispatcher(dataResolver(resource)) )
 	},[])
 	return (
 		<>

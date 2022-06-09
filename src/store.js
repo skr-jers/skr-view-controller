@@ -1,7 +1,7 @@
-import {combineReducers, configureStore, createStore} from '@reduxjs/toolkit'
-import { createSlice }                                from "@reduxjs/toolkit"
+import { configureStore } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit"
 
-/*function reducerFactory(resources){
+function reducerFactory(resources){
 	let reducers= {}
 	let actions = {}
 	resources.forEach(resource=>{
@@ -13,7 +13,6 @@ import { createSlice }                                from "@reduxjs/toolkit"
 			},
 			reducers: {
 				[resource+"OnWaiting"]: (state, action)=>{
-					console.log("Entramos a la acción: "+ action.type)
 					return state= {
 						...state,
 						status: "waiting",
@@ -42,17 +41,8 @@ import { createSlice }                                from "@reduxjs/toolkit"
 			...slice.actions
 		}
 	})
-	console.log(actions)
 	return reducers
-}*/
-const staticReducer = {}
-const createReducer = (asyncReducer = {} )=> {
-	combineReducers({
-		...staticReducer,
-		...asyncReducer
-	})
 }
-
 export default configureStore({
-	reducer: createReducer() ,
+	reducer: reducerFactory(["companies", "users", "policies"]) ,
 })
