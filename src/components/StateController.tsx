@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import componentRenderer  from "../componentRenderer";
-import {useDispatch}     from "react-redux";
+import {useDispatch}      from "react-redux";
+import axios              from "axios";
 
 
 const json = {
@@ -40,12 +41,29 @@ const json = {
 					dataSourceId: "companies",
 					attributes:
 						{
-							uri: "/companies",
-							hostname: "localhost",
+							uri: "companies",
+							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
 							dataObject: "table",
 							method: "GET"
 						}
 				},
+				columns: [
+					{
+						id: "id",
+						header: "ID",
+						accessor: "id"
+					},
+					{
+						id: "name",
+						header: "Nombre",
+						accessor: "name"
+					},
+					{
+						id: "address",
+						header: "Dirección",
+						accessor: "address"
+					}
+				]
 			}
 		},
 		{
@@ -55,12 +73,24 @@ const json = {
 					dataSourceId: "companies",
 					attributes:
 						{
-							uri: "/companies",
-							hostname: "localhost",
+							uri: "companies",
+							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
 							dataObject: "table",
 							method: "GET"
 						}
 				},
+				columns: [
+					{
+						id: "name",
+						header: "Nombre",
+						accessor: "name"
+					},
+					{
+						id: "address",
+						header: "Dirección",
+						accessor: "address"
+					}
+				]
 			}
 		},
 		{
@@ -70,12 +100,29 @@ const json = {
 					dataSourceId: "users",
 					attributes:
 						{
-							uri: "/users",
-							hostname: "localhost",
+							uri: "users",
+							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
 							dataObject: "table",
 							method: "GET"
 						}
 				},
+				columns: [
+					{
+						id: "id",
+						header: "ID",
+						accessor: "id"
+					},
+					{
+						id: "name",
+						header: "Nombre",
+						accessor: "name"
+					},
+					{
+						id: "address",
+						header: "Dirección",
+						accessor: "address"
+					}
+				]
 			}
 		},
 		{
@@ -85,12 +132,50 @@ const json = {
 					dataSourceId: "policies",
 					attributes:
 						{
-							uri: "/policies",
-							hostname: "localhost",
+							uri: "policies",
+							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
 							dataObject: "table",
 							method: "GET"
 						}
 				},
+				columns: [
+					{
+						id: "id",
+						header: "ID",
+						accessor: "id"
+					},
+					{
+						id: "branch",
+						header: "Ramo",
+						accessor: "branch"
+					},
+					{
+						id: "amount",
+						header: "Cantidad",
+						accessor: "amount"
+					},
+					{
+						id: "status",
+						header: "Estado",
+						accessor: "status",
+						cell: {
+							type: "transformValue",
+							payload: {
+								trueValue: "pagado",
+								falseValue: "pendiente"
+							}
+						}
+					},
+					{
+						id: "actions",
+						header: "Acciones",
+						accessor: "id",
+						cell: {
+							type: "editEntry",
+							payload: null
+						}
+					},
+				]
 			}
 		},
 		{
@@ -155,19 +240,8 @@ const StateController = () => {
 		// @ts-ignore
 		return dispatch=> {
 			dispatch( {type: `${dataSourceId}/${dataSourceId}OnWaiting`, payload: null})
-			 new Promise((resolve, reject) => {
-				// @ts-ignore
-
-				 setTimeout(()=>resolve({
-					 columns: ["Nombre", "Dirección"],
-					 rows: [
-						 ["Empresa1", "Calle A"],
-						 ["Empresa2", "Calle B"],
-						 ["Empresa3", "Calle C"],
-					 ]
-				 }), 9000)
-			}).then(response=>{
-				dispatch( {type: `${dataSourceId}/${dataSourceId}OnSuccess`, payload: response})
+			 axios.get(attributes.hostname+attributes.uri).then(response=>{
+				dispatch( {type: `${dataSourceId}/${dataSourceId}OnSuccess`, payload: response.data})
 			}).catch(error=>{
 				dispatch( {type: `${dataSourceId}/${dataSourceId}OnFailure`, payload: null})
 			})

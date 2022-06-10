@@ -7,16 +7,42 @@ type Props ={
         dataSourceId: string,
         attributes: [
             {
-                "uri": "/companies",
-                "hostname": "localhost",
-                "dataObject": "table",
-                "method": "GET"
+                "uri": string,
+                "hostname": string,
+                "dataObject": string,
+                "method": string
             }
         ]
     }
+    columns:[
+        {
+            id: string,
+            header: string,
+            accessor: string,
+            cell?: {
+                type: string,
+                payload:any
+            }
+        }
+    ]
 }
 
-const Table = ({data}: Props) => {
+// @ts-ignore
+const transformValue = (value: boolean,{trueValue, falseValue}) =>{
+    return value? trueValue: falseValue
+}
+const editEntry = (value:string) => {
+    // @ts-ignore
+    return <button onClick={()=>console.log("Vamos a editar el registro: " + value)}>Editar</button>
+
+}
+const actions= {
+    transformValue,
+    editEntry
+}
+
+
+const Table = ({data, columns}: Props) => {
     /** acceder al objeto "state" que debe envolver a toda la aplicación, o al menos a este componente.
      *  Esto puede ser React.contextAPI o Redux
      */
@@ -31,19 +57,24 @@ const Table = ({data}: Props) => {
             <tr>
                 {
                     // @ts-ignore
-                    tableData.columns.map(column=><th>{column}</th>)
+                    columns.map(column=><th>{column.header}</th>)
                 }
             </tr>
             </thead>
             <tbody>
             {
                 // @ts-ignore
-                tableData.rows.map(row=>{
+                tableData.map(row=>{
+                    // @ts-ignore
                     return(
                         <tr>
                             {
+                                columns.map(column=><td>{
+                                    column.cell?
                                 // @ts-ignore
-                                row.map(cell=><td>{cell}</td>)
+                                        actions[column.cell.type](row[column.accessor],column.cell.payload):
+                                        row[column.accessor]
+                                }</td>)
                             }
                         </tr>
                     )
