@@ -1,6 +1,7 @@
-import React from 'react'
+import React                              from 'react'
 
 const Form = ({name, children, display}) => {
+
     return (
         <form name={name} style={ {
             border: "1px solid magenta",

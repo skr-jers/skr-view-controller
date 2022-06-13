@@ -1,6 +1,6 @@
 import React         from 'react'
-import {useSelector} from "react-redux";
-import {log}         from "util";
+import axios                                   from "axios";
+import {useGetResourceByNameQuery} from "../app/service";
 type Props ={
 
     data: {
@@ -34,11 +34,14 @@ const transformValue = (value: boolean,{trueValue, falseValue}) =>{
 const editEntry = (value:string) => {
     // @ts-ignore
     return <button onClick={()=>console.log("Vamos a editar el registro: " + value)}>Editar</button>
-
+}
+const putAction=(value:string, url:string, body: any) => {
+    return <button onClick={()=>axios.put("https://62a357635bd3609cee686264.mockapi.io/insurance/API/companies/"+value, {})}>Aumentar cantidad</button>
 }
 const actions= {
     transformValue,
-    editEntry
+    editEntry,
+    putAction
 }
 
 
@@ -47,11 +50,15 @@ const Table = ({data, columns}: Props) => {
      *  Esto puede ser React.contextAPI o Redux
      */
     // @ts-ignore
-    const componentData= useSelector((state)=>state[data.dataSourceId])
-    const {data: tableData, status} = componentData
+    //const componentData= useSelector((state)=>state[data.dataSourceId])
+    //const {data: tableData, status} = componentData
+
+    // @ts-ignore
+    const {data: tableData, error, isLoading } = useGetResourceByNameQuery(data.dataSourceId)
+
 
     return (
-        status=== "success"?
+        !isLoading?
         <table style={{border: "1px solid blue", padding: "10px", margin: "10px 0 10px 0"}}>
             <thead>
             <tr>
@@ -81,7 +88,7 @@ const Table = ({data, columns}: Props) => {
                 })
             }
             </tbody>
-        </table>: status==="waiting"? "Cargando...": "Ocurrió un error"
+        </table>: isLoading? "Cargando...": "Ocurrió un error"
 
     )
 }

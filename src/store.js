@@ -1,5 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { createSlice } from "@reduxjs/toolkit"
+import { configureStore }          from '@reduxjs/toolkit'
+import { createSlice }             from "@reduxjs/toolkit"
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query";
+import {exampleAPI}                from "./app/service";
 
 function reducerFactory(resources){
 	let reducers= {}
@@ -44,5 +46,11 @@ function reducerFactory(resources){
 	return reducers
 }
 export default configureStore({
-	reducer: reducerFactory(["companies", "users", "policies"]) ,
+	reducer: {
+		//...reducerFactory(["companies", "users", "policies"]),
+		[exampleAPI.reducerPath]: exampleAPI.reducer
+	} ,
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware().concat(exampleAPI.middleware),
 })
+

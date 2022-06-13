@@ -129,6 +129,30 @@ const json = {
 			instanceOf: "table",
 			props: {
 				data:{
+					dataSourceId: "users",
+					attributes:
+						{
+							uri: "users",
+							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
+							dataObject: "table",
+							method: "GET"
+						}
+				},
+				columns: [
+
+
+					{
+						id: "address",
+						header: "Dirección",
+						accessor: "address"
+					}
+				]
+			}
+		},
+		{
+			instanceOf: "table",
+			props: {
+				data:{
 					dataSourceId: "policies",
 					attributes:
 						{
@@ -171,7 +195,7 @@ const json = {
 						header: "Acciones",
 						accessor: "id",
 						cell: {
-							type: "editEntry",
+							type: "putAction",
 							payload: null
 						}
 					},
@@ -252,7 +276,7 @@ const StateController = () => {
 		const resources = findAllByKey(json, 'data');
 		console.log(resources)
 		// @ts-ignore
-		resources.forEach(resource => dispatcher(dataResolver(resource)) )
+		//resources.forEach(resource => dispatcher(dataResolver(resource)) )
 	},[])
 	return (
 		<>
