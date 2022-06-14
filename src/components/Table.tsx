@@ -1,6 +1,6 @@
 import React         from 'react'
-import axios                                   from "axios";
-import {useGetResourceByNameQuery} from "../app/service";
+import axios                                                                         from "axios";
+import {useDeleteRecordMutation, useGetResourceByNameQuery, useUpdateRecordMutation} from "../app/service";
 type Props ={
 
     data: {
@@ -22,7 +22,13 @@ type Props ={
             cell?: {
                 type: string,
                 payload:any
-            }
+            },
+            buttons?: [{
+                actionType:string
+                params: any,
+                label?: string,
+                icon?: string
+            }]
         }
     ]
 }
@@ -36,12 +42,40 @@ const editEntry = (value:string) => {
     return <button onClick={()=>console.log("Vamos a editar el registro: " + value)}>Editar</button>
 }
 const putAction=(value:string, url:string, body: any) => {
-    return <button onClick={()=>axios.put("https://62a357635bd3609cee686264.mockapi.io/insurance/API/companies/"+value, {})}>Aumentar cantidad</button>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [updateRecord, result] = useUpdateRecordMutation()
+    return <button onClick={()=>updateRecord({url, value, body })}>Aumentar cantidad</button>
+    // <button onClick={()=>console.log("xD")}>Aumentar cantidad</button>
 }
+
+// @ts-ignore
+const button = (value, payload) => {
+    // @ts-ignore
+    return React.createElement(TableRowButton, {value, payload} )
+}
+    // @ts-ignore
+const TableRowButton = ({value, payload, actionType, label, icon}) => {
+
+    const { resource, body} = payload
+    const [updateRecord, ] = useUpdateRecordMutation()
+    const [deleteRecord, ] = useDeleteRecordMutation()
+            // @ts-ignore
+
+    const actionTypes = {
+        update: updateRecord,
+        delete: deleteRecord
+    }
+    return (
+            // @ts-ignore
+            <button onClick={()=>actionTypes[actionType]({resourceName: resource, recordId: value, body })}>{label}</button>
+    )
+}
+
 const actions= {
     transformValue,
     editEntry,
-    putAction
+    putAction,
+    button
 }
 
 
@@ -57,6 +91,8 @@ const Table = ({data, columns}: Props) => {
     const {data: tableData, error, isLoading } = useGetResourceByNameQuery(data.dataSourceId)
 
 
+
+
     return (
         !isLoading?
         <table style={{border: "1px solid blue", padding: "10px", margin: "10px 0 10px 0"}}>
@@ -64,21 +100,30 @@ const Table = ({data, columns}: Props) => {
             <tr>
                 {
                     // @ts-ignore
-                    columns.map(column=><th>{column.header}</th>)
+                    columns.map((column, index)=><th key ={index}>{column.header}</th>)
                 }
             </tr>
             </thead>
             <tbody>
             {
                 // @ts-ignore
-                tableData.map(row=>{
+                tableData.map((row, index)=>{
                     // @ts-ignore
                     return(
-                        <tr>
+                        <tr key={index}>
                             {
-                                columns.map(column=><td>{
-                                    column.cell?
-                                // @ts-ignore
+                                columns.map((column, index)=><td key={index}>{
+                                    column.buttons? column.buttons.map((button)=>{
+                                        return (<TableRowButton
+                                            key={`${index}_${row[column.accessor]}_${button.actionType}`}
+                                            value={row[column.accessor]}
+                                            actionType={button.actionType}
+                                            payload={button.params}
+                                            label={button.label}
+                                            icon={button.icon}
+                                        />)
+                                        }):column.cell?
+                                        // @ts-ignore
                                         actions[column.cell.type](row[column.accessor],column.cell.payload):
                                         row[column.accessor]
                                 }</td>)

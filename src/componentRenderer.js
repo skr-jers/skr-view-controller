@@ -20,7 +20,10 @@ const componentRenderer = (component) => {
     if (typeof Components[component.instanceOf] !== "undefined") {
         return React.createElement(
             Components[component.instanceOf],
-            component.props,
+            {
+                key: Math.random(),
+                ...component.props,
+            },
             component.children && component.children.map(child => componentRenderer(child) )
         );
     }

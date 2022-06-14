@@ -9,147 +9,6 @@ const json = {
 	props: null,
 	children: [
 		{
-			instanceOf: "form",
-			props: {
-				name: "formulario_ejemplo"
-			},
-			children: [
-				{
-					instanceOf: "inputText",
-					props: {
-						name: "nombre",
-						id: "nombre",
-						label: "Nombre",
-						placeholder: "Juanito"
-					}
-				},
-				{
-					instanceOf: "inputText",
-					props: {
-						name: "apellido",
-						id: "apellido",
-						label: "Apellido",
-						placeholder: "Sánchez"
-					}
-				}
-			]
-		},
-		{
-			instanceOf: "table",
-			props: {
-				data:{
-					dataSourceId: "companies",
-					attributes:
-						{
-							uri: "companies",
-							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
-							dataObject: "table",
-							method: "GET"
-						}
-				},
-				columns: [
-					{
-						id: "id",
-						header: "ID",
-						accessor: "id"
-					},
-					{
-						id: "name",
-						header: "Nombre",
-						accessor: "name"
-					},
-					{
-						id: "address",
-						header: "Dirección",
-						accessor: "address"
-					}
-				]
-			}
-		},
-		{
-			instanceOf: "table",
-			props: {
-				data:{
-					dataSourceId: "companies",
-					attributes:
-						{
-							uri: "companies",
-							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
-							dataObject: "table",
-							method: "GET"
-						}
-				},
-				columns: [
-					{
-						id: "name",
-						header: "Nombre",
-						accessor: "name"
-					},
-					{
-						id: "address",
-						header: "Dirección",
-						accessor: "address"
-					}
-				]
-			}
-		},
-		{
-			instanceOf: "table",
-			props: {
-				data:{
-					dataSourceId: "users",
-					attributes:
-						{
-							uri: "users",
-							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
-							dataObject: "table",
-							method: "GET"
-						}
-				},
-				columns: [
-					{
-						id: "id",
-						header: "ID",
-						accessor: "id"
-					},
-					{
-						id: "name",
-						header: "Nombre",
-						accessor: "name"
-					},
-					{
-						id: "address",
-						header: "Dirección",
-						accessor: "address"
-					}
-				]
-			}
-		},
-		{
-			instanceOf: "table",
-			props: {
-				data:{
-					dataSourceId: "users",
-					attributes:
-						{
-							uri: "users",
-							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
-							dataObject: "table",
-							method: "GET"
-						}
-				},
-				columns: [
-
-
-					{
-						id: "address",
-						header: "Dirección",
-						accessor: "address"
-					}
-				]
-			}
-		},
-		{
 			instanceOf: "table",
 			props: {
 				data:{
@@ -194,10 +53,28 @@ const json = {
 						id: "actions",
 						header: "Acciones",
 						accessor: "id",
-						cell: {
-							type: "putAction",
-							payload: null
-						}
+						buttons: [
+							{
+								actionType: "update",
+								params: {
+									resource: "policies",
+									body:{
+										amount: 100
+									}
+								},
+								label: "Cambiar a 100"
+							},
+							{
+								actionType: "delete",
+								params: {
+									resource: "policies",
+									body:{
+										amount: 100
+									}
+								},
+								label: "Eliminar registro"
+							}
+						]
 					},
 				]
 			}
@@ -205,16 +82,91 @@ const json = {
 		{
 			instanceOf: "form",
 			props: {
+				name: "Nuevo registro",
 				fields: [
 					{
-						name: "rfc",
+						name: "branch",
 						type: "text",
 						required: true,
-						validation: "rfcValidate"
+						label: "Ramo"
+					},
+					{
+						name: "amount",
+						type: "number",
+						required: true,
+						label: "Cantidad"
+					},
+				],
+				record: {
+					type: "new",
+				},
+				formAction: {
+					actionType: "add",
+					targetResource: "policies"
+				}
+
+			}
+		},
+		{
+			instanceOf: "form",
+			props: {
+				name: "Modificar registro existente",
+				fields: [
+					{
+						name: "branch",
+						type: "text",
+						required: true,
+						label: "Ramo"
+					},
+					{
+						name: "amount",
+						type: "number",
+						required: true,
+						label: "Cantidad"
+					},
+				],
+				formAction: {
+					actionType: "update",
+					targetResource: "policies"
+				},
+				record: {
+					type: "existing",
+					originResource: "policies"
+				}
+			}
+		},
+		{
+			instanceOf: "table",
+			props: {
+				data:{
+					dataSourceId: "companies",
+					attributes:
+						{
+							uri: "companies",
+							hostname: "https://62a357635bd3609cee686264.mockapi.io/insurance/API/",
+							dataObject: "table",
+							method: "GET"
+						}
+				},
+				columns: [
+					{
+						id: "id",
+						header: "ID",
+						accessor: "id"
+					},
+					{
+						id: "name",
+						header: "Nombre",
+						accessor: "name"
+					},
+					{
+						id: "address",
+						header: "Dirección",
+						accessor: "address"
 					}
 				]
 			}
-		}
+		},
 	]
 }
 
@@ -271,13 +223,6 @@ const StateController = () => {
 			})
 		}
 	}
-	useEffect(()=> {
-	// @ts-ignore
-		const resources = findAllByKey(json, 'data');
-		console.log(resources)
-		// @ts-ignore
-		//resources.forEach(resource => dispatcher(dataResolver(resource)) )
-	},[])
 	return (
 		<>
 			{componentRenderer(json)}
