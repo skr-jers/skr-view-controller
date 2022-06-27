@@ -1,6 +1,7 @@
-import React         from 'react'
+import React                                                                         from 'react'
 import axios                                                                         from "axios";
 import {useDeleteRecordMutation, useGetResourceByNameQuery, useUpdateRecordMutation} from "../app/service";
+import {useDispatch}                                                                 from "react-redux";
 type Props ={
 
     data: {
@@ -56,18 +57,23 @@ const button = (value, payload) => {
     // @ts-ignore
 const TableRowButton = ({value, payload, actionType, label, icon}) => {
 
+    const dispatch = useDispatch()
     const { resource, body} = payload
     const [updateRecord, ] = useUpdateRecordMutation()
     const [deleteRecord, ] = useDeleteRecordMutation()
-            // @ts-ignore
+    //StateMutation
 
+    const stateMutation = ({stateKey, stateValue}: any)=> dispatch({type: `${stateKey}/${stateKey}`, payload: stateValue})
+
+    // @ts-ignore
     const actionTypes = {
         update: updateRecord,
-        delete: deleteRecord
+        delete: deleteRecord,
+        stateMutation
     }
     return (
             // @ts-ignore
-            <button onClick={()=>actionTypes[actionType]({resourceName: resource, recordId: value, body })}>{label}</button>
+            <button onClick={()=>actionTypes[actionType]({resourceName: resource, recordId: value, body, stateKey: payload.stateKey? payload.stateKey: "undefined", stateValue: value })}>{label}</button>
     )
 }
 

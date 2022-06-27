@@ -1,20 +1,24 @@
-import React, {useState}                                                          from 'react'
+import React, {useState}                                                      from 'react'
 import {useAddRecordMutation, useGetRecordByIdQuery, useUpdateRecordMutation} from "../app/service";
-import {Formik, Form as FormikForm, Field}                                        from "formik";
+import {Formik, Form as FormikForm, Field}                                    from "formik";
+import {useSelector}                                                          from "react-redux";
 
 const Form = ({name, fields, formAction, record}) => {
     const {actionType, targetResource} = formAction
     const [updateRecord] = useUpdateRecordMutation()
     const [addRecord] = useAddRecordMutation()
     const fieldNames= fields.map(field=> field.name)
-    const id = 6
-    const { data } = useGetRecordByIdQuery({resourceName: record.originResource, recordId:id})
     let initialValues = {}
-    record.type === "new" ?
-        initialValues = fieldNames.forEach(field=>{
-            initialValues = {...initialValues, [field]: ""}
-        }) :
-        initialValues = data
+    fieldNames.forEach(field=>{
+        initialValues = {...initialValues, [field]: ""}
+    })
+
+    const stateValue= (useSelector(state=>state[record.stateKey])|| false)
+
+    const id = record.type=== "existing"?
+        //useViewController
+        stateValue.data
+        :null
 
 
     const formActions = {
@@ -27,7 +31,7 @@ const Form = ({name, fields, formAction, record}) => {
                 border: "1px solid magenta",
                 padding: "10px"
             }}
-                  action={formAction}
+                        action={formAction}
             >
                 <h1>Formulario: {name}</h1>
                 <div style={{display: "grid",}}>

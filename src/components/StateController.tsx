@@ -73,6 +73,13 @@ const json = {
 									}
 								},
 								label: "Eliminar registro"
+							},
+							{
+								actionType: "stateMutation",
+								params: {
+									stateKey: "policySelected",
+								},
+								label: "Editar registro"
 							}
 						]
 					},
@@ -131,7 +138,8 @@ const json = {
 				},
 				record: {
 					type: "existing",
-					originResource: "policies"
+					originResource: "policies",
+					stateKey: "policySelected"
 				}
 			}
 		},
