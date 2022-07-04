@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react'
-import componentRenderer  from "../componentRenderer";
-import {useDispatch}      from "react-redux";
-import axios              from "axios";
+import React from 'react'
+import componentRenderer       from "../componentRenderer";
+import {Provider } from "react-redux";
+import store              from "../store";
 
 
 const json = {
@@ -171,6 +171,11 @@ const json = {
 						id: "address",
 						header: "Dirección",
 						accessor: "address"
+					},
+					{
+						id: "address",
+						header: "Dirección 2",
+						accessor: "address"
 					}
 				]
 			}
@@ -179,62 +184,11 @@ const json = {
 }
 
 const StateController = () => {
-	//Llamada al orquestador
-	//json = fetch(/orquestador/kerno2)
 
-	const dispatcher = useDispatch()
-
-		let resources:any[] = []
-	function getResourcesList(json:any,): string[]{
-		if (json.props?.data) {
-			resources.push(json.props.data)
-		}
-		json.children && json.children.map((child: any) => getResourcesList(child))
-		return resources
-	}
-	// @ts-ignore
-	function findAllByKey(obj, keyToFind) {
-		// @ts-ignore
-		// @ts-ignore
-		const array = Object.entries(obj)
-			.reduce((acc, [key, value]) => (key === keyToFind)
-					// @ts-ignore
-					? acc.concat(value)
-					: (typeof value === 'object' && value)
-						? acc.concat(findAllByKey(value, keyToFind))
-						: acc
-				, [])
-
-			// @ts-ignore
-		function getUniqueListBy(arr, key) {
-			// @ts-ignore
-			return [...new Map(arr.map(item => [item[key], item])).values()]
-		}
-							  // @ts-ignore
-		return getUniqueListBy(array, "dataSourceId") || [];
-	}
-
-
-
-
-	function dataResolver(resource: any) {
-		console.log(resource)
-		const {dataSourceId, attributes} = resource
-
-		// @ts-ignore
-		return dispatch=> {
-			dispatch( {type: `${dataSourceId}/${dataSourceId}OnWaiting`, payload: null})
-			 axios.get(attributes.hostname+attributes.uri).then(response=>{
-				dispatch( {type: `${dataSourceId}/${dataSourceId}OnSuccess`, payload: response.data})
-			}).catch(error=>{
-				dispatch( {type: `${dataSourceId}/${dataSourceId}OnFailure`, payload: null})
-			})
-		}
-	}
 	return (
-		<>
+		<Provider store={store([])}>
 			{componentRenderer(json)}
-		</>
+		</Provider>
 	)
 }
 

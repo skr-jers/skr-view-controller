@@ -1,5 +1,5 @@
-import { configureStore }          from '@reduxjs/toolkit'
-import { createSlice }             from "@reduxjs/toolkit"
+import {combineReducers, configureStore} from '@reduxjs/toolkit'
+import { createSlice }                                  from "@reduxjs/toolkit"
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query";
 import {exampleAPI}                from "./app/service";
 
@@ -34,12 +34,32 @@ function reducerFactory(keys){
 	console.log(actions)
 	return reducers
 }
-export default configureStore({
-	reducer: {
-		...reducerFactory(["policySelected"]),
-		[exampleAPI.reducerPath]: exampleAPI.reducer
-	} ,
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat(exampleAPI.middleware),
-})
+
+
+function createReducer(asyncReducers) {
+	return combineReducers({
+		[exampleAPI.reducerPath]: exampleAPI.reducer,
+		...asyncReducers,
+	})
+}
+function generateStore(stateFragments){
+	const store =  configureStore({
+		reducer: {
+			[exampleAPI.reducerPath]: exampleAPI.reducer
+		} ,
+		middleware: (getDefaultMiddleware) =>
+			getDefaultMiddleware().concat(exampleAPI.middleware),
+	})
+	store.asyncReducers = {}
+
+	function injectReducer(key, reducer){
+		store.asyncReducers[key] = reducer
+		store.replaceReducer(createReducer(store.asyncReducers))
+		return store
+	}
+	store.injectReducer = injectReducer
+	return store
+}
+
+export default generateStore
 

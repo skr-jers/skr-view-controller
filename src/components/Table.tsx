@@ -2,6 +2,7 @@ import React                                                                    
 import axios                                                                         from "axios";
 import {useDeleteRecordMutation, useGetResourceByNameQuery, useUpdateRecordMutation} from "../app/service";
 import {useDispatch}                                                                 from "react-redux";
+import {useDynamicState}                                                             from "../hooks/useDynamicState";
 type Props ={
 
     data: {
@@ -56,14 +57,18 @@ const button = (value, payload) => {
 }
     // @ts-ignore
 const TableRowButton = ({value, payload, actionType, label, icon}) => {
-
+    const actions = useDynamicState(payload.stateKey)
+    // @ts-ignore
+    console.log(actions)
     const dispatch = useDispatch()
     const { resource, body} = payload
     const [updateRecord, ] = useUpdateRecordMutation()
     const [deleteRecord, ] = useDeleteRecordMutation()
     //StateMutation
 
-    const stateMutation = ({stateKey, stateValue}: any)=> dispatch({type: `${stateKey}/${stateKey}`, payload: stateValue})
+    // @ts-ignore
+    const stateMutation = ({stateKey, stateValue}: any)=> dispatch(actions.success(value))
+
 
     // @ts-ignore
     const actionTypes = {
@@ -72,8 +77,11 @@ const TableRowButton = ({value, payload, actionType, label, icon}) => {
         stateMutation
     }
     return (
+            <button onClick={()=>{
             // @ts-ignore
-            <button onClick={()=>actionTypes[actionType]({resourceName: resource, recordId: value, body, stateKey: payload.stateKey? payload.stateKey: "undefined", stateValue: value })}>{label}</button>
+                actionTypes[actionType]({resourceName: resource, recordId: value, body, stateKey: payload.stateKey? payload.stateKey: "undefined", stateValue: value })
+            }
+            }>{label}</button>
     )
 }
 
